@@ -3,7 +3,7 @@ from model import recommend_careers
 from resume_parser import extract_text_from_pdf, extract_text_from_docx, extract_skills, analyze_job_description
 import urllib.parse
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
 
 # 💯 MODULE 7 - LEARN 100% - PARTICULAR WEBSITES (BACKEND)
 # Video + Free Course + Practice - For Every Skill
