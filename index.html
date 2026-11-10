@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Career Recommender</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+  <h1>🤖 AI Career Recommendation</h1>
+  <p class="sub">Enter your skills & get career + skill-gap analysis</p>
+  <div class="card">
+    <label>Your Skills (comma separated)</label>
+    <input id="skills" type="text" placeholder="e.g. Python, SQL, HTML, Excel" value="Python, SQL, HTML">
+    <div class="chips">
+      <button onclick="setSkills('Python, SQL, Excel, Power BI')">Data Analyst Demo</button>
+      <button onclick="setSkills('HTML, CSS, JavaScript, React')">Web Dev Demo</button>
+      <button onclick="setSkills('Python, Machine Learning, SQL')">AI Demo</button>
+    </div>
+    <button class="main-btn" onclick="getRecommend()">Analyze My Career →</button>
+  </div>
+  <div id="loading" style="display:none">Analyzing your skills...</div>
+  <div id="results"></div>
+</div>
+<script>
+function setSkills(v){ document.getElementById('skills').value = v; }
+async function getRecommend(){
+  const skills = document.getElementById('skills').value;
+  if(!skills.trim()){ alert('Enter skills'); return; }
+  document.getElementById('loading').style.display='block';
+  document.getElementById('results').innerHTML='';
+  const res = await fetch('/recommend', {method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({skills})});
+  const data = await res.json();
+  document.getElementById('loading').style.display='none';
+  let html = '<h2>Top Recommendations For You</h2>';
+  data.forEach((c,i)=>{
+    html += `<div class="result-card">
+      <div class="top"><h3>${i+1}. ${c.career}</h3><span class="badge">${c.demand} Demand • ${c.salary}</span></div>
+      <div class="bar-bg"><div class="bar" style="width:${c.match}%"></div></div>
+      <p><b>Match: ${c.match}%</b> (${c.have_count}/${c.total} skills)</p>
+      <p><b style="color:green">✅ You Have:</b> ${c.have.length? c.have.join(', ') : 'None yet'}</p>
+      <p><b style="color:red">❌ Missing / Skill Gap:</b> ${c.missing.length? c.missing.join(', ') : 'No Gap! You are ready'}</p>
+      <div class="roadmap"><b>🗺️ 60-Day Roadmap:</b><ol>${c.roadmap.map(r=>`<li>${r}</li>`).join('')}</ol></div>
+    </div>`;
+  });
+  document.getElementById('results').innerHTML = html;
+}
+</script>
+</body>
+</html>

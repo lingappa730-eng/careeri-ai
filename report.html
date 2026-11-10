@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Project Report - AI Career Recommendation System</title><link rel="stylesheet" href="/static/style.css"><style>.report{max-width:900px;margin:0 auto;background:white;padding:25px;border-radius:14px}h2{color:#6d28d9;border-bottom:2px solid #eee;padding-bottom:6px;margin-top:22px}table{width:100%;border-collapse:collapse;margin:10px 0}td,th{border:1px solid #ddd;padding:8px;text-align:left;font-size:14px}th{background:#6d28d9;color:white}</style></head>
+<body><div class="container"><a href="/">← Back to Home</a><div class="report">
+<h1 style="text-align:center;">AI CAREER RECOMMENDATION SYSTEM<br>WITH SKILL-GAP ANALYSIS</h1>
+<p style="text-align:center;"><b>Final Year Project | Python + Flask + Machine Learning</b></p>
+<div style="text-align:center; background:#f0f0ff; padding:12px; border-radius:10px; border:2px dashed #6d28d9;">
+  <label><b>Student Name:</b></label>
+  <input id="stuName" type="text" placeholder="Type Your Name" style="padding:8px; border-radius:8px; border:1px solid #ccc; width:160px;">
+  <label><b>Roll No:</b></label>
+  <input id="rollNo" type="text" placeholder="Type Roll No" style="padding:8px; border-radius:8px; border:1px solid #ccc; width:120px;">
+  <label><b>Guide:</b></label>
+  <input id="guideName" type="text" placeholder="Type Guide Name" style="padding:8px; border-radius:8px; border:1px solid #ccc; width:160px;">
+  <br><br>
+  <button onclick="saveDetails()" style="background:#6d28d9; color:white; border:none; padding:9px 20px; border-radius:20px; font-weight:700; cursor:pointer;">💾 Save Details</button>
+  <button onclick="window.print()" style="background:#22c55e; color:white; border:none; padding:9px 20px; border-radius:20px; font-weight:700; cursor:pointer; margin-left:8px;">🖨️ Print Report</button>
+  <p id="savedMsg" style="color:green; font-weight:700; margin:6px 0 0;"></p>
+</div>
+
+<h2>1. Abstract</h2>
+<p>Students don't know which career suits their skills and what skills they are missing. This system takes user's skills, uses TF-IDF + Cosine Similarity to recommend best career, shows Skill Gap (Have vs Missing), gives 60-Day Roadmap, Learn 100% Plan with Videos + Free Courses, 3 Assignments per skill, Chart Update on completion, and generates a Certificate after 100% completion. It also analyzes Resume (PDF/DOCX) and Job Description (JD) match.</p>
+
+<h2>2. Objectives</h2>
+<ul><li>Recommend best career based on skills using Machine Learning</li><li>Show Skill Gap - What user has vs what is missing</li><li>Give Roadmap + Learning Resources (YouTube, NPTEL, Great Learning, Coursera)</li><li>Give Assignments - 3 per skill (Easy, Medium, Project)</li><li>Update Main Analysis Chart when assignment completed</li><li>Generate Certificate after 100% completion</li><li>Resume + JD Analysis</li></ul>
+
+<h2>3. Modules</h2>
+<table><tr><th>No</th><th>Module</th><th>What It Does</th></tr>
+<tr><td>1</td><td>🤖 AI Match</td><td>TF-IDF + Cosine Similarity - Match %</td></tr>
+<tr><td>2</td><td>📊 Skill Gap</td><td>✅ Have vs ❌ Missing Skills</td></tr>
+<tr><td>3</td><td>🗺️ Roadmap</td><td>60-Day Learning Plan</td></tr>
+<tr><td>4</td><td>📄 Resume Upload</td><td>Extract skills from PDF / DOCX</td></tr>
+<tr><td>5</td><td>🎯 JD Analysis</td><td>Job Description Match % + Missing Skills</td></tr>
+<tr><td>6</td><td>💯 Learn 100%</td><td>Video + Free Course + Practice per Missing Skill</td></tr>
+<tr><td>7</td><td>📝 Assignments</td><td>3 Per Skill - Easy, Medium, Project - Tick = Progress ↑</td></tr>
+<tr><td>8</td><td>📈 Chart Update</td><td>Click "I Completed Skill" - Skill added to Skills Box - Chart Re-Analyzes - 69% → 84% → 100%</td></tr>
+<tr><td>9</td><td>🎓 Certificate</td><td>After 6/6 Assignments - Name + Career + Date - Print / Save as PDF</td></tr>
+</table>
+
+<h2>4. Technology Used</h2>
+<table><tr><th>Part</th><th>Technology</th></tr><tr><td>Language</td><td>Python</td></tr><tr><td>Framework</td><td>Flask</td></tr><tr><td>ML</td><td>TF-IDF Vectorizer + Cosine Similarity (Scikit-Learn)</td></tr><tr><td>Frontend</td><td>HTML, CSS, JavaScript</td></tr><tr><td>Resume</td><td>PyMuPDF / python-docx</td></tr><tr><td>Logic</td><td>Skill-Gap, Progress Calculation, Certificate Generation</td></tr></table>
+
+<h2>5. How It Works - Algorithm</h2>
+<p><b>Step 1:</b> User enters skills - e.g. Python, SQL, Excel, Power BI<br><b>Step 2:</b> TF-IDF converts skills + career skills to numbers<br><b>Step 3:</b> Cosine Similarity calculates Match % for each career<br><b>Step 4:</b> Top career shown + Have vs Missing<br><b>Step 5:</b> For Missing Skills - Learn 100% Plan + Assignments shown<br><b>Step 6:</b> Tick Assignment → Progress = Start + (Done/Total)*(100-Start) → If Done == Total, Progress = 100% → Certificate Generates<br><b>Step 7:</b> Click "Add All Skills" → Skills Box updated → getRecommend() runs again → Chart improves to 100%</p>
+
+<h2>6. Test Case - Data Analyst Example</h2>
+<table><tr><th>Input Skills</th><th>Result</th></tr>
+<tr><td>Python, SQL, Excel, Power BI</td><td>Data Analyst - 69% - Missing: Statistics, Tableau</td></tr>
+<tr><td>+ Statistics (After Assignment)</td><td>Data Analyst - 84% - Missing: Tableau</td></tr>
+<tr><td>+ Tableau (After Assignment)</td><td>Data Analyst - 100% - Missing: None - Certificate Generated</td></tr></table>
+
+<h2>7. Future Scope</h2>
+<ul><li>Save user progress in Database / Login</li><li>AI Mock Interview Questions</li><li>Job Portal Integration</li></ul>
+
+<h2>8. Conclusion</h2>
+<p>This system not only recommends career, but also guides student from 69% to 100% with Learning + Assignments + Certificate. It is complete, working, and useful for students.</p>
+<p style="text-align:center; margin-top:20px;"><b>--- End of Report ---</b><br><a href="/">← Back to Home</a></p>
+</div></div>
+<script>
+function saveDetails(){
+  let n = document.getElementById('stuName').value.trim();
+  let r = document.getElementById('rollNo').value.trim();
+  let g = document.getElementById('guideName').value.trim();
+  if(!n || !r || !g){ alert('Please Fill All 3 - Name, Roll No, Guide!'); return; }
+  localStorage.setItem('stuName', n);
+  localStorage.setItem('rollNo', r);
+  localStorage.setItem('guideName', g);
+  document.getElementById('savedMsg').innerText = '✅ Saved! ' + n + ' | ' + r + ' | ' + g;
+  alert('✅ Saved! Now it will stay even after refresh!');
+}
+window.onload = function(){
+  if(localStorage.getItem('stuName')) document.getElementById('stuName').value = localStorage.getItem('stuName');
+  if(localStorage.getItem('rollNo')) document.getElementById('rollNo').value = localStorage.getItem('rollNo');
+  if(localStorage.getItem('guideName')) document.getElementById('guideName').value = localStorage.getItem('guideName');
+}
+</script>
+</body></html>

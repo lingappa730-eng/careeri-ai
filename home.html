@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Career Recommendation System</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.navbar{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 20px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:16px}
+.logo{font-weight:800;font-size:18px}
+.nav a{margin-left:14px;text-decoration:none;color:#6d28d9;font-weight:600;font-size:14px}
+.hero{background:linear-gradient(135deg,#6d28d9,#06b6d4);color:#fff;padding:28px 22px;border-radius:16px;text-align:center;margin-bottom:16px}
+.hero h1{font-size:28px;line-height:1.2}
+.hero p{margin-top:10px;opacity:.95}
+.footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:16px}
+.report-btn{display:inline-block;background:#fff;color:#6d28d9;padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;margin-top:14px}
+@media print{ body *{visibility:hidden;} #printArea, #printArea *{visibility:visible;} #printArea{position:absolute; left:0; top:0; width:100%;} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="navbar"><div class="logo">🎓 Career AI</div><div class="nav"><a href="/">Home</a><a href="/about">About</a><a href="/">Recommend</a><a href="/report">📄 Report</a></div></div>
+  <div class="hero"><h1>AI CAREER RECOMMENDATION<br>SYSTEM WITH SKILL-GAP ANALYSIS</h1><p>Find your best career in 10 seconds. Know what you have, what you are missing, and what to learn next.</p><a href="/report" class="report-btn">📄 View Project Report</a></div>
+  <div style="display:flex; gap:15px; margin:20px 0; flex-wrap:wrap;">
+    <div onclick="document.getElementById('skillsBox').scrollIntoView({behavior:'smooth'}); document.getElementById('skillsBox').focus();" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #e0e0e0; text-align:center;"><h3 style="margin:0">🤖 AI Match</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">TF-IDF + Cosine Similarity<br><span style="color:#2563eb; font-weight:bold;">Click to Try 👆</span></p></div>
+    <div onclick="document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #e0e0e0; text-align:center;"><h3 style="margin:0">📊 Skill Gap</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">Have vs Missing<br><span style="color:#2563eb; font-weight:bold;">Click to See Gap 👆</span></p></div>
+    <div onclick="document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #e0e0e0; text-align:center;"><h3 style="margin:0">🗺️ Roadmap</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">60 Day Learning Plan<br><span style="color:#2563eb; font-weight:bold;">Click to See Plan 👆</span></p></div>
+    <div onclick="document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #22c55e; text-align:center;"><h3 style="margin:0">💯 Learn 100%</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">Video + Course + Practice<br><span style="color:#16a34a; font-weight:bold;">Click to Learn 👆</span></p></div>
+    <div onclick="document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #f59e0b; text-align:center;"><h3 style="margin:0">📝 Assignments</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">3 Per Skill + Certificate<br><span style="color:#b45309; font-weight:bold;">Click to Do 👆</span></p></div>
+    <div onclick="document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});" style="flex:1; min-width:150px; background:white; padding:15px; border-radius:12px; cursor:pointer; border:2px solid #ef4444; text-align:center;"><h3 style="margin:0">🎓 Certificate</h3><p style="margin:5px 0 0; color:#666; font-size:14px;">After All Assignments<br><span style="color:#dc2626; font-weight:bold;">Click to Get 👆</span></p></div>
+  </div>
+  <div class="card"><label>Your Skills (comma separated)</label><input id="skillsBox" type="text" placeholder="e.g. Python, SQL, HTML, Excel" value="Python, SQL, Excel, Power BI" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc;"><div class="chips"><button onclick="setSkills('Python, SQL, Excel, Power BI')">Data Analyst Demo</button><button onclick="setSkills('HTML, CSS, JavaScript, React')">Web Dev Demo</button><button onclick="setSkills('Python, Machine Learning, SQL')">AI Demo</button></div><button class="main-btn" onclick="getRecommend()">Analyze My Career →</button><br><br><a href="/report"><button type="button">View Project Report</button></a></div>
+  <div class="card" style="border:2px dashed #6d28d9; margin-top:16px"><h3>📄 Module: Resume Upload + JD Analysis</h3><p>Upload Resume (PDF/DOCX) + Paste Job Description</p><input type="file" id="resumeFile" accept=".pdf,.docx"><br><br><textarea id="jdText" rows="4" placeholder="Paste Job Description here..." style="width:100%; padding:10px; border-radius:8px"></textarea><br><br><button class="main-btn" onclick="uploadResume()">Upload & Analyze Resume →</button><div id="resumeResult"></div></div>
+  <div id="loading" style="display:none">Analyzing your skills...</div><div id="resultsBox"></div>
+  <div id="printArea" style="display:none;"></div>
+  <p class="footer">Made for Final Year Project | Python + Flask + Machine Learning</p>
+</div>
+<script>
+function setSkills(v){ document.getElementById('skillsBox').value = v; }
+async function getRecommend(){
+  const skills = document.getElementById('skillsBox').value;
+  if(!skills.trim()){ alert('Enter skills'); return; }
+  document.getElementById('loading').style.display='block';
+  document.getElementById('resultsBox').innerHTML='';
+  const res = await fetch('/recommend', {method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({skills})});
+  const data = await res.json();
+  document.getElementById('loading').style.display='none';
+  let best = data[0];
+  let html = `<div style="background:linear-gradient(135deg,#6d28d9,#06b6d4); color:white; padding:20px; border-radius:16px; margin-top:16px; text-align:center;"><h2 style="margin:0; color:white;">🎯 Best Career For You: ${best.career}</h2><h1 style="margin:5px 0; color:white; font-size:42px;">${best.match}% Match</h1><p style="margin:0; opacity:.9;">You have ${best.have_count}/${best.total} skills • Missing: ${best.missing.join(', ') || 'None - You are Ready!'}</p><p style="margin:5px 0 0; font-size:13px;">${best.missing.length ? '💡 Learn '+best.missing[0]+' first to increase Match to '+(best.match+10)+'%+' : '🏆 No Skill Gap!'}</p></div><h2 style="margin-top:20px;">📊 Analysis Chart - Top 5 Careers</h2><div style="background:white; padding:15px; border-radius:12px; border:1px solid #eee;">`;
+  data.forEach((c)=>{
+    let color = c.match >= 80 ? '#22c55e' : c.match >= 60 ? '#f59e0b' : c.match >= 40 ? '#06b6d4' : '#ef4444';
+    let label = c.match >= 80 ? 'Excellent ⭐' : c.match >= 60 ? 'Good 👍' : c.match >= 40 ? 'Average' : 'Need Learning';
+    html += `<div style="margin-bottom:16px;"><div style="display:flex; justify-content:space-between; font-weight:700; font-size:14px; margin-bottom:5px;"><span>${c.career}</span><span style="color:${color}">${c.match}% - ${label}</span></div><div style="background:#eee; height:22px; border-radius:10px; overflow:hidden;"><div style="width:${c.match}%; background:${color}; height:100%;"></div></div><div style="font-size:12px; color:#666; margin-top:4px;">✅ Have: ${c.have.join(', ') || 'None'} | ❌ Missing: ${c.missing.join(', ') || 'No Gap'}</div></div>`;
+  });
+  html += `</div><h2 style="margin-top:20px;">📋 Detailed Analysis</h2>`;
+  data.forEach((c,i)=>{
+    html += `<div class="result-card"><div class="top"><h3>${i+1}. ${c.career}</h3><span class="badge">${c.demand} Demand • ${c.salary}</span></div><div class="bar-bg"><div class="bar" style="width:${c.match}%"></div></div><p><b>Match: ${c.match}%</b> (${c.have_count}/${c.total} skills) - ${c.match>=80?'🏆 Best Fit':c.match>=60?'👍 Good Fit':'📚 Need Learning'}</p><p><b style="color:green">✅ You Have:</b> ${c.have.length? c.have.join(', ') : 'None yet'}</p><p><b style="color:red">❌ Missing / Skill Gap:</b> ${c.missing.length? c.missing.join(', ') : 'No Gap! You are ready'}</p><div class="roadmap"><b>🗺️ 60-Day Roadmap:</b><ol>${c.roadmap.map(r=>`<li>${r}</li>`).join('')}</ol></div><button onclick="learn100(${i}, '${c.career}', '${c.missing.join(', ')}', ${c.match})" style="background:linear-gradient(135deg,#6d28d9,#06b6d4); color:white; border:none; padding:10px 16px; border-radius:20px; font-weight:700; cursor:pointer; margin-top:10px; width:100%;">💯 I am Interested - Learn to 100% + Assignments + Certificate →</button><div id="learn-${i}"></div></div>`;
+  });
+  document.getElementById('resultsBox').innerHTML = html;
+  document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});
+}
+function learn100(i, career, missing, match){
+  let need = (100 - match).toFixed(1);
+  let skills = (missing && missing.trim()!=='') ? missing.split(', ') : ['All Skills Completed'];
+  let html = `<div style="background:#f0fdf4; border:2px solid #22c55e; padding:14px; border-radius:12px; margin-top:12px;">
+    <h3 style="margin:0; color:#15803d;">💯 Your 100% Learning Plan - ${career}</h3>
+    <p style="margin:6px 0;"><b>Now:</b> ${match}% → <b>Target:</b> 100% • <b>Need:</b> ${need}% more</p>
+    <div style="background:#e5e7eb; height:14px; border-radius:10px; overflow:hidden;"><div id="prog-${i}" style="width:${match}%; background:#22c55e; height:100%; transition:0.5s;"></div></div>
+    <p id="progText-${i}" style="font-size:13px; font-weight:700; margin:4px 0;">📊 Progress: ${match}% - Complete Assignments to Reach 100%</p>
+    <p><b>🎯 Learn These to Reach 100%:</b></p><ol style="padding-left:20px;">`;
+  skills.forEach((s,idx)=>{
+    html += `<li style="margin-bottom:10px;"><b>${s}</b> - Day ${(idx+1)*10-9} to ${(idx+1)*10}<br>🎥 <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(s)}+CodeWithHarry" target="_blank" style="color:#dc2626; font-weight:700;">YouTube - CodeWithHarry / Apna College</a><br>📚 <a href="https://www.nptel.ac.in/courses" target="_blank" style="color:#2563eb; font-weight:700;">NPTEL</a> • <a href="https://www.mygreatlearning.com/" target="_blank" style="color:#2563eb; font-weight:700;">Great Learning</a> • <a href="https://www.coursera.org/search?query=${encodeURIComponent(s)}" target="_blank" style="color:#2563eb; font-weight:700;">Coursera</a><br>🛠️ <a href="https://www.hackerrank.com/" target="_blank" style="color:#059669; font-weight:700;">HackerRank</a> • <a href="https://www.kaggle.com/learn" target="_blank" style="color:#059669; font-weight:700;">Kaggle</a> • <a href="https://github.com/topics/${encodeURIComponent(s.toLowerCase())}" target="_blank" style="color:#059669; font-weight:700;">GitHub</a></li>`;
+  });
+  html += `</ol><div style="background:white; padding:12px; border-radius:10px; border:2px dashed #f59e0b;"><h3 style="margin:0; color:#b45309;">📝 Assignments - Do After Videos + Course</h3><p style="font-size:13px; color:#666; margin:4px 0;">✅ Tick when done - Certificate will generate after ALL ticked!</p>`;
+  let total = skills.length * 3;
+  skills.forEach((s,idx)=>{
+    html += `<div style="margin-top:10px; background:#fffbeb; padding:10px; border-radius:8px;"><b>📌 ${s} - 3 Assignments:</b><br><label style="display:block; margin:5px 0;"><input type="checkbox" onchange="updateProg(${i}, ${match}, ${total})"> <b>Assignment 1 - Easy:</b> Write 10 Notes / Definitions of ${s} + Watch 1 Video & Summarize</label><label style="display:block; margin:5px 0;"><input type="checkbox" onchange="updateProg(${i}, ${match}, ${total})"> <b>Assignment 2 - Medium:</b> Solve 10 ${s} Questions on <a href="https://www.hackerrank.com/" target="_blank">HackerRank</a> / <a href="https://www.kaggle.com/learn" target="_blank">Kaggle</a> - Take Screenshot</label><label style="display:block; margin:5px 0;"><input type="checkbox" onchange="updateProg(${i}, ${match}, ${total})"> <b>Assignment 3 - Project:</b> Build 1 Mini Project using ${s} for ${career} + Upload to <a href="https://github.com/" target="_blank">GitHub</a> + Add to Resume</label></div>`;
+  });
+  html += `</div><div style="background:#e0e7ff; padding:12px; border-radius:10px; margin-top:10px; text-align:center;"><h3 style="margin:0;">✅ Assignment Done? Update Your Main Chart!</h3><p style="font-size:13px; margin:4px 0;">Click skill to add it to your Skills Box - Main Chart will improve!</p>`;
+  skills.forEach((s)=>{ if(s !== 'All Skills Completed'){ html += `<button onclick="addSkillAndReAnalyze('${s}')" style="background:#6d28d9; color:white; border:none; padding:8px 14px; border-radius:20px; font-weight:700; cursor:pointer; margin:4px;">✅ I Completed ${s} - Add + Re-Analyze →</button><br>`; } });
+  html += `</div><div style="background:white; padding:10px; border-radius:8px; margin-top:10px;"><b>🏆 Particular Websites:</b><br>🎥 Video: CodeWithHarry • Apna College • freeCodeCamp<br>📚 Course: NPTEL • Great Learning • Coursera • edX<br>🛠️ Practice: HackerRank • Kaggle • LeetCode • GitHub<br><br><b>📅 Plan:</b> Week 1-2 Video + NPTEL → Week 3-4 HackerRank → Week 5-6 Project → Week 7-8 Assignments + Mock = <b>100% Ready 💯</b></div><div id="cert-${i}"></div></div>`;
+  document.getElementById('learn-'+i).innerHTML = html;
+  document.getElementById('learn-'+i).scrollIntoView({behavior:'smooth', block:'center'});
+}
+// 📝 ASSIGNMENT PROGRESS + 🎓 REAL CERTIFICATE - FIXED
+function updateProg(i, startMatch, total){
+  let box = document.querySelectorAll('#learn-'+i+' input[type="checkbox"]');
+  let done = 0; box.forEach(b=>{ if(b.checked) done++; });
+  let per = (100 - startMatch) / total;
+  let now = Math.min(100, startMatch + (done * per));
+  if(done >= total){ now = 100; }
+  document.getElementById('prog-'+i).style.width = now + '%';
+  document.getElementById('progText-'+i).innerHTML = '📊 Progress: ' + now.toFixed(0) + '% - ' + done + '/' + total + ' Assignments Done';
+  if(done >= total){
+    let career = document.querySelector('#learn-'+i+' h3') ? document.querySelector('#learn-'+i+' h3').innerText.replace('💯 Your 100% Learning Plan - ','') : 'Career';
+    document.getElementById('cert-'+i).innerHTML = `<div id="certBox-${i}" style="background:white; border:4px double #f59e0b; padding:20px; border-radius:12px; text-align:center; margin-top:12px;"><h1 style="margin:0; color:#b45309;">🏆 CERTIFICATE OF COMPLETION</h1><p style="margin:5px 0;">This is to certify that</p><input id="certName-${i}" type="text" placeholder="Enter Your Name Here" style="font-size:22px; font-weight:800; text-align:center; border:none; border-bottom:2px solid #f59e0b; outline:none; width:80%; padding:5px;"><p style="margin:8px 0;">has successfully completed <b>100% Learning + All Assignments</b></p><h2 style="margin:0; color:#6d28d9;">${career}</h2><p style="margin:5px 0; font-size:13px;">Videos • Free Course (NPTEL / Great Learning) • Practice (HackerRank / Kaggle) • 3 Assignments Per Skill • Project on GitHub</p><p style="font-size:13px; color:#666;">Date: ${new Date().toLocaleDateString('en-IN')} | Progress: 100% | Project: AI Career Recommendation System</p><button onclick="printCert(${i})" style="background:#6d28d9; color:white; border:none; padding:10px 18px; border-radius:20px; font-weight:700; cursor:pointer; margin:4px;">🖨️ Print / Download Certificate →</button><button onclick="addAllSkillsAfterCert(${i})" style="background:#22c55e; color:white; border:none; padding:10px 18px; border-radius:20px; font-weight:700; cursor:pointer; margin:4px;">✅ Add All Skills & Update Chart →</button></div>`;
+  } else { document.getElementById('cert-'+i).innerHTML = ''; }
+}
+function printCert(i){
+  let name = document.getElementById('certName-'+i).value.trim();
+  if(!name){ alert('Please Enter Your Name First!'); document.getElementById('certName-'+i).focus(); return; }
+  document.getElementById('printArea').innerHTML = document.getElementById('certBox-'+i).innerHTML;
+  // Replace input in print copy with name
+  let inp = document.getElementById('printArea').querySelector('input');
+  if(inp) inp.outerHTML = `<h2 style="margin:0;">${name}</h2>`;
+  // Hide buttons in print copy
+  document.getElementById('printArea').querySelectorAll('button').forEach(b=>b.style.display='none');
+  document.getElementById('printArea').style.display='block';
+  window.print();
+  document.getElementById('printArea').style.display='none';
+}
+function addAllSkillsAfterCert(i){
+  let btns = document.querySelectorAll('#learn-'+i+' button[onclick^="addSkillAndReAnalyze"]');
+  let box = document.getElementById('skillsBox');
+  btns.forEach(b=>{
+    let m = b.getAttribute('onclick').match(/'([^']+)'/);
+    if(m){ let skill = m[1]; let current = box.value.split(',').map(s=>s.trim().toLowerCase()); if(!current.includes(skill.toLowerCase())){ box.value = box.value ? box.value + ', ' + skill : skill; } }
+  });
+  alert('✅ All Completed Skills Added! Re-Analyzing Chart...');
+  getRecommend();
+}
+function addSkillAndReAnalyze(skill){
+  let box = document.getElementById('skillsBox');
+  let current = box.value.split(',').map(s=>s.trim().toLowerCase());
+  if(current.includes(skill.toLowerCase())){ alert(skill + ' already added!'); return; }
+  box.value = box.value ? box.value + ', ' + skill : skill;
+  alert('✅ ' + skill + ' Added! Now Re-Analyzing... Watch Main Chart Improve!');
+  getRecommend();
+}
+async function uploadResume(){
+  const file = document.getElementById('resumeFile').files[0];
+  const jd = document.getElementById('jdText').value;
+  if(!file){ alert('Upload resume first'); return; }
+  const form = new FormData(); form.append('resume', file); form.append('job_description', jd);
+  document.getElementById('resumeResult').innerHTML = 'Reading resume...';
+  const res = await fetch('/upload_resume', {method:'POST', body: form});
+  const data = await res.json();
+  let html = `<hr><p><b>✅ Skills Found in Resume:</b> ${data.skills_found.join(', ')}</p>`;
+  if(data.jd_analysis){ html += `<p><b>🎯 JD Match: ${data.jd_analysis.match}%</b></p><p><b style="color:green">Matched:</b> ${data.jd_analysis.matched.join(', ')}</p><p><b style="color:red">Missing:</b> ${data.jd_analysis.missing.join(', ')}</p>`; }
+  html += `<h4>Top Jobs:</h4>`; data.job_recommendations.forEach(j=>{ html += `<p>${j.career || j.title} - ${j.match}% Match</p>`; });
+  document.getElementById('resumeResult').innerHTML = html;
+}
+</script>
+</body>
+</html>
