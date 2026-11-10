@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Career Recommendation System</title>
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="style.css">
 <style>
 .navbar{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 20px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:16px}
 .logo{font-weight:800;font-size:18px}
@@ -42,9 +42,18 @@ async function getRecommend(){
   if(!skills.trim()){ alert('Enter skills'); return; }
   document.getElementById('loading').style.display='block';
   document.getElementById('resultsBox').innerHTML='';
+  try{
   const res = await fetch('/recommend', {method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({skills})});
   const data = await res.json();
   document.getElementById('loading').style.display='none';
+  if(data.error || !Array.isArray(data)){
+    alert('Error: ' + (data.error || 'Server error - Check Render Logs'));
+    return;
+  }
+  if(!data.length){
+    alert('No careers found - Check careers.json');
+    return;
+  }
   let best = data[0];
   let html = `<div style="background:linear-gradient(135deg,#6d28d9,#06b6d4); color:white; padding:20px; border-radius:16px; margin-top:16px; text-align:center;"><h2 style="margin:0; color:white;">🎯 Best Career For You: ${best.career}</h2><h1 style="margin:5px 0; color:white; font-size:42px;">${best.match}% Match</h1><p style="margin:0; opacity:.9;">You have ${best.have_count}/${best.total} skills • Missing: ${best.missing.join(', ') || 'None - You are Ready!'}</p><p style="margin:5px 0 0; font-size:13px;">${best.missing.length ? '💡 Learn '+best.missing[0]+' first to increase Match to '+(best.match+10)+'%+' : '🏆 No Skill Gap!'}</p></div><h2 style="margin-top:20px;">📊 Analysis Chart - Top 5 Careers</h2><div style="background:white; padding:15px; border-radius:12px; border:1px solid #eee;">`;
   data.forEach((c)=>{
@@ -58,6 +67,10 @@ async function getRecommend(){
   });
   document.getElementById('resultsBox').innerHTML = html;
   document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    document.getElementById('loading').style.display='none';
+    alert('Server Error: ' + e.message + ' - Check Render Logs');
+  }
 }
 function learn100(i, career, missing, match){
   let need = (100 - match).toFixed(1);
@@ -82,7 +95,6 @@ function learn100(i, career, missing, match){
   document.getElementById('learn-'+i).innerHTML = html;
   document.getElementById('learn-'+i).scrollIntoView({behavior:'smooth', block:'center'});
 }
-// 📝 ASSIGNMENT PROGRESS + 🎓 REAL CERTIFICATE - FIXED
 function updateProg(i, startMatch, total){
   let box = document.querySelectorAll('#learn-'+i+' input[type="checkbox"]');
   let done = 0; box.forEach(b=>{ if(b.checked) done++; });
@@ -100,10 +112,8 @@ function printCert(i){
   let name = document.getElementById('certName-'+i).value.trim();
   if(!name){ alert('Please Enter Your Name First!'); document.getElementById('certName-'+i).focus(); return; }
   document.getElementById('printArea').innerHTML = document.getElementById('certBox-'+i).innerHTML;
-  // Replace input in print copy with name
   let inp = document.getElementById('printArea').querySelector('input');
   if(inp) inp.outerHTML = `<h2 style="margin:0;">${name}</h2>`;
-  // Hide buttons in print copy
   document.getElementById('printArea').querySelectorAll('button').forEach(b=>b.style.display='none');
   document.getElementById('printArea').style.display='block';
   window.print();
@@ -133,12 +143,15 @@ async function uploadResume(){
   if(!file){ alert('Upload resume first'); return; }
   const form = new FormData(); form.append('resume', file); form.append('job_description', jd);
   document.getElementById('resumeResult').innerHTML = 'Reading resume...';
+  try{
   const res = await fetch('/upload_resume', {method:'POST', body: form});
   const data = await res.json();
+  if(data.error){ document.getElementById('resumeResult').innerHTML = '<p style="color:red;">Error: '+data.error+'</p>'; return; }
   let html = `<hr><p><b>✅ Skills Found in Resume:</b> ${data.skills_found.join(', ')}</p>`;
   if(data.jd_analysis){ html += `<p><b>🎯 JD Match: ${data.jd_analysis.match}%</b></p><p><b style="color:green">Matched:</b> ${data.jd_analysis.matched.join(', ')}</p><p><b style="color:red">Missing:</b> ${data.jd_analysis.missing.join(', ')}</p>`; }
   html += `<h4>Top Jobs:</h4>`; data.job_recommendations.forEach(j=>{ html += `<p>${j.career || j.title} - ${j.match}% Match</p>`; });
   document.getElementById('resumeResult').innerHTML = html;
+  }catch(e){ document.getElementById('resumeResult').innerHTML = '<p style="color:red;">Error: '+e.message+'</p>'; }
 }
 </script>
 </body>
