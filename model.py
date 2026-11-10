@@ -1,9 +1,17 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import json
+import os
 
 def load_careers():
-    with open('data/careers.json', encoding='utf-8') as f:
+    # Try both places - careers.json in main folder OR data/careers.json
+    if os.path.exists('careers.json'):
+        path = 'careers.json'
+    elif os.path.exists('data/careers.json'):
+        path = 'data/careers.json'
+    else:
+        path = 'careers.json'
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 def recommend_careers(user_skills_list):
